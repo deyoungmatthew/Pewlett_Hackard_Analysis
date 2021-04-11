@@ -68,10 +68,53 @@ WHERE (e.birth_date BETWEEN '1965-01-01' AND '1965-12-31')
 AND (t.to_date = '9999-01-01')
 ORDER BY e.emp_no ASC;
 
-SELECT * FROM mentorship_eligibility;
+SELECT COUNT(DISTINCT(emp_no)) FROM mentorship_eligibility;
 
 SELECT COUNT(emp_no) as "Employee Count" ,
 	title as "Title"
 FROM mentorship_eligibility
 GROUP BY title
 ORDER BY COUNT(emp_no) DESC;
+
+SELECT COUNT(DISTINCT(emp_no)) FROM employees;
+
+-- 
+SELECT ut.emp_no,
+	ut.first_name,
+	ut.last_name,
+		d.dept_name,
+			e.birth_date,
+				t.title
+INTO first_year
+FROM unique_titles AS ut
+INNER JOIN employees AS e
+ON ut.emp_no = e.emp_no
+	INNER JOIN dept_emp AS de
+	ON ut.emp_no = de.emp_no
+		INNER JOIN departments AS d
+		ON d.dept_no = de.dept_no
+			INNER JOIN titles AS t
+			on t.emp_no = ut.emp_no
+WHERE (e.birth_date BETWEEN '1952-01-01' AND '1952-12-31')
+ORDER BY ut.emp_no;
+
+SELECT * FROM first_year;
+
+SELECT COUNT(emp_no) AS "Employee Total",
+	title AS "Title"
+INTO title_first_year
+FROM first_year
+GROUP BY title
+ORDER BY COUNT(emp_no) DESC;
+
+SELECT * FROM title_first_year;
+
+SELECT COUNT(emp_no) AS "Employee Total",
+	dept_name AS "Department"
+INTO dept_first_year
+FROM first_year
+GROUP BY dept_name
+ORDER BY COUNT(emp_no) DESC;
+
+SELECT * FROM dept_first_year;
+
